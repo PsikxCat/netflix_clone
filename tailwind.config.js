@@ -14,5 +14,9 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+    require('tailwind-scrollbar-hide'),
+    // require('@tailwindcss/line-clamp'), se omite ya que ahora se inlcuye por defecto
+  ],
 }

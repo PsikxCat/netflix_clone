@@ -15,13 +15,16 @@ const authOptions = {
   ],
   callbacks: {
     async session({ session, token, user }) {
+      // Se asigna el nombre de usuario y el uid al objeto session
       session.user.username = session?.user?.name.split(' ')[0].toLowerCase()
       session.user.uid = token?.sub
-
+      // Se retorna el objeto session con los datos modificados
+      // Estos valores estaran disponibles mientras el usuario este logueado
       return session
     },
   },
-  secret: 'default_secret_key',
+  // La clave secreta global asegura que los tokens de sesión sean seguros y no puedan ser falsificados, incluso si se utilizan varios proveedores de autenticación diferentes.
+  secret: process.env.GLOBAL_SECRET_KEY
 }
 
 const handler = NextAuth(authOptions)
