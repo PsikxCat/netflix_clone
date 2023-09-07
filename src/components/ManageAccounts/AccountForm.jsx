@@ -4,27 +4,18 @@ import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-export default function AccountForm({ setShowAccountForm, formData, setFormData, getAccounts }) {
+import { createAccount } from '@utils/apiUtils'
+
+export default function AccountForm({ setShowAccountForm, formData, setFormData, handleGetAccounts }) {
   const { data: session } = useSession()
 
   const handleSaveAccount = async (e) => {
     e.preventDefault()
 
-    const response = await fetch('/api/account/create-account', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...formData,
-        uid: session?.user?.uid,
-      })
-    })
-
-    const data = await response.json()
+    const data = await createAccount(formData, session?.user?.uid)
 
     if (data && data.success) {
-      getAccounts()
+      handleGetAccounts()
       setShowAccountForm(false)
     }
   }

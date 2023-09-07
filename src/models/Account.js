@@ -16,6 +16,11 @@ const AccountSchema = new mongoose.Schema({
     required: [true, 'PIN is required.'],
     trim: true
   },
+  avatar: {
+    type: String,
+    required: [true, 'Image is required.'],
+    trim: true
+  }
 },
 { timestamps: true })
 

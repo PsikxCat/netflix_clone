@@ -10,11 +10,11 @@ export async function POST(request) {
   try {
     await connectToDB()
 
-    const { name, pin, uid } = await request.json()
+    const { name, pin, uid, avatar } = await request.json()
 
     // Validacion de datos
     if (!name || typeof name !== 'string' || !pin || typeof pin !== 'string' ||
-      !uid || typeof uid !== 'string') {
+      !uid || typeof uid !== 'string' || !avatar || typeof avatar !== 'string') {
       return NextResponse.json({
         success: false,
         message: 'Invalid input data',
@@ -48,6 +48,7 @@ export async function POST(request) {
       name,
       pin: hashPin,
       uid,
+      avatar,
     })
     // Si la cuenta se creó correctamente, devolver mensaje de éxito
     if (newAccount) {

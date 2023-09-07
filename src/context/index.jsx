@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 
 import CircleLoader from '@components/CircleLoader/CircleLoader'
@@ -11,6 +11,10 @@ export default function GlobalState({ children }) {
   const [loggedInAccount, setLoggedInAccount] = useState(null)
   const [accounts, setAccounts] = useState([])
   const [pageLoader, setPageLoader] = useState(true)
+
+  useEffect(() => {
+    setLoggedInAccount(sessionStorage.getItem('loggedInAccount'))
+  }, [])
 
   // Se recupera la data de la sesión...
   const { data: session } = useSession()

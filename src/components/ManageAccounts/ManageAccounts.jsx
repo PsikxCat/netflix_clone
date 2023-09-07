@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { GlobalContext } from '@context'
 import { CircleLoader } from '@components'
 import { AccountForm, PinContainer } from './'
+import { getAccounts, deleteAccount } from '@utils/apiUtils'
 
 export default function ManageAccounts() {
   const { accounts, setAccounts, pageLoader, setPageLoader } = useContext(GlobalContext)
@@ -15,13 +16,10 @@ export default function ManageAccounts() {
   const [formData, setFormData] = useState({ name: '', pin: '' })
   const [showAccountForm, setShowAccountForm] = useState(false)
   const [showDeleteIcons, setShowDeleteIcons] = useState(false)
-  const [showPinContainer, setShowPinContainer] = useState(false)
+  const [showPinContainer, setShowPinContainer] = useState({ show: false, accountId: '' })
 
-  const getAccounts = async () => {
-    const response = await fetch(`/api/account/get-accounts?uid=${session?.user?.uid}`, {
-      method: 'GET',
-    })
-    const data = await response.json()
+  const handleGetAccounts = async () => {
+    const data = await getAccounts(session)
 
     if (data && data.body.userAccounts) {
       setAccounts(data.body.userAccounts)
@@ -33,25 +31,33 @@ export default function ManageAccounts() {
   }
 
   const handleDeleteAccount = async (accountId) => {
-    const response = await fetch(`/api/account/delete-account?id=${accountId}`, {
-      method: 'DELETE',
-    })
-    const data = await response.json()
+    const data = await deleteAccount(accountId)
 
     if (data && data.success) {
-      getAccounts()
+      handleGetAccounts()
       setShowDeleteIcons(false)
     }
   }
 
+  const handleOpenPinContainer = (accountId) => {
+    showDeleteIcons
+      ? setShowDeleteIcons(false)
+      : setShowPinContainer({ show: true, accountId })
+  }
+
+  const handleOpenAccountForm = () => {
+    setShowAccountForm(true)
+    setShowDeleteIcons(false)
+  }
+
   useEffect(() => {
-    getAccounts()
+    handleGetAccounts()
   }, [])
 
   if (pageLoader) return <CircleLoader />
 
   return (
-    <section className="min-h-screen flex-center flex-col relative">
+    <section className="min-h-screen flex-center flex-col relative bg-[#030609]">
       <div className="text-center flex-col">
         <h1 className="text-white font-bold text-[54px] my-[36px]">
           Who&apos;s Watching?
@@ -64,9 +70,9 @@ export default function ManageAccounts() {
               key={account._id}
             >
               <div className='relative'>
-                <Image className='w-[130px] h-[130px] object-cover rounded-full'
-                  onClick={() => setShowPinContainer(!showPinContainer)}
-                  src='https://api.dicebear.com/7.x/fun-emoji/svg?seed=George'
+                <Image className='w-[130px] h-[130px] object-cover rounded-full bg-[#E5B109]'
+                  onClick={() => handleOpenPinContainer(account._id)}
+                  src={account.avatar}
                   alt={account.name}
                   width={130}
                   height={130}
@@ -90,7 +96,7 @@ export default function ManageAccounts() {
           {/* se renderiza si hay menos de cuatro cuentas creadas */}
           {accounts && accounts.length < 4 && (
             <li className='flex flex-col items-center max-w-[200px] w-[155px] cursor-pointer'
-              onClick={() => setShowAccountForm(true)}
+              onClick={handleOpenAccountForm}
             >
               <div className='flex-center w-[130px] h-[130px] rounded-full bg-red-500'>
                 <PlusIcon className='text-white w-[50px] h-[50px]' />
@@ -118,12 +124,13 @@ export default function ManageAccounts() {
             setShowAccountForm={setShowAccountForm}
             formData={formData}
             setFormData={setFormData}
-            getAccounts={getAccounts}
+            handleGetAccounts={handleGetAccounts}
           />
         )}
 
-        {showPinContainer && (
+        {showPinContainer.show && (
           <PinContainer
+            showPinContainer={showPinContainer}
             setShowPinContainer={setShowPinContainer}
           />
         )}
