@@ -19,12 +19,12 @@ export default function PinContainer({ showPinContainer, setShowPinContainer }) 
   }
 
   const handlePinSubmit = async (inputPin) => {
-    const data = await loginAccount(showPinContainer.accountId, inputPin)
+    const data = await loginAccount(showPinContainer.account.id, inputPin)
 
     if (data && !data.success && data.message === 'Invalid pin') setPinError(true)
     else if (data && data.success) {
-      setLoggedInAccount(showPinContainer.accountId)
-      sessionStorage.setItem('loggedInAccount', showPinContainer.accountId)
+      setLoggedInAccount(showPinContainer.account.id)
+      sessionStorage.setItem('loggedInAccount', JSON.stringify(showPinContainer.account))
       router.push(pathname)
       setPageLoader(false)
     } else {

@@ -41,25 +41,25 @@
   font-weight: 400;
 }
 
-.section-dowload {
+.section-download {
   padding: 70px 45px;
 }
 
-.section-dowload .grid > div:first-child {
+.section-download .grid > div:first-child {
   order: 2;
 }
 
-.section-dowload {
+.section-download {
   order: 1;
 }
 
-.section-dowload img {
+.section-download img {
   max-width: 100%;
   height: auto;
   border: 0;
 }
 
-.section-dowload h2 {
+.section-download h2 {
   font-size: 1.625rem;
   font-weight: 400;
 }
@@ -162,8 +162,6 @@
 .cardWrapper:hover {
   background: black;
 }
-
-
 
 .cardWrapper:hover .buttonWrapper {
   display: flex;

@@ -16,7 +16,7 @@ export default function ManageAccounts() {
   const [formData, setFormData] = useState({ name: '', pin: '' })
   const [showAccountForm, setShowAccountForm] = useState(false)
   const [showDeleteIcons, setShowDeleteIcons] = useState(false)
-  const [showPinContainer, setShowPinContainer] = useState({ show: false, accountId: '' })
+  const [showPinContainer, setShowPinContainer] = useState({ show: false, account: '' })
 
   const handleGetAccounts = async () => {
     const data = await getAccounts(session)
@@ -39,10 +39,10 @@ export default function ManageAccounts() {
     }
   }
 
-  const handleOpenPinContainer = (accountId) => {
+  const handleOpenPinContainer = (account) => {
     showDeleteIcons
       ? setShowDeleteIcons(false)
-      : setShowPinContainer({ show: true, accountId })
+      : setShowPinContainer({ show: true, account })
   }
 
   const handleOpenAccountForm = () => {
@@ -71,7 +71,7 @@ export default function ManageAccounts() {
             >
               <div className='relative'>
                 <Image className='w-[130px] h-[130px] object-cover rounded-full bg-[#E5B109]'
-                  onClick={() => handleOpenPinContainer(account._id)}
+                  onClick={() => handleOpenPinContainer({ id: account._id, avatar: account.avatar, name: account.name })}
                   src={account.avatar}
                   alt={account.name}
                   width={130}
