@@ -56,7 +56,7 @@ export default function Navbar() {
             {menuItems.map((item) => (
               <li
                 key={item.id}
-                className={`cursor-pointer text-[16px] font-medium transition duration-[.4s] hover:text-[#e5b209c0] ${pathname === item.href ? 'text-red-600' : 'text-[#E5E5E5]'}`}
+                className={`cursor-pointer text-[16px] text-shadow font-medium transition duration-[.4s] hover:text-[#e5b209c0] ${pathname === item.href ? 'text-red-600' : 'text-[#E5E5E5]'}`}
               >
                 <Link href={item.href}>
                   {item.label}

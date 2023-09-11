@@ -27,6 +27,10 @@
   color: white;
 }
 
+.text-shadow {
+  text-shadow: -2px 3px 3px rgba(0,0,0,0.6);
+}
+
 .text-info {
   margin: 16px;
 }

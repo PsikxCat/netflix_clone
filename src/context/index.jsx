@@ -3,7 +3,7 @@
 import { createContext, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 
-import CircleLoader from '@components/CircleLoader/CircleLoader'
+import { CircleLoader } from '@components'
 
 export const GlobalContext = createContext(null)
 
@@ -11,6 +11,8 @@ export default function GlobalState({ children }) {
   const [loggedInAccount, setLoggedInAccount] = useState(null)
   const [accounts, setAccounts] = useState([])
   const [pageLoader, setPageLoader] = useState(true)
+  const [trendingAllMedia, setTrendingAllMedia] = useState([])
+  const [mediaData, setMediaData] = useState([])
 
   useEffect(() => {
     setLoggedInAccount(sessionStorage.getItem('loggedInAccount'))
@@ -29,7 +31,11 @@ export default function GlobalState({ children }) {
         accounts,
         setAccounts,
         pageLoader,
-        setPageLoader
+        setPageLoader,
+        trendingAllMedia,
+        setTrendingAllMedia,
+        mediaData,
+        setMediaData,
       }}
     >
       {children}

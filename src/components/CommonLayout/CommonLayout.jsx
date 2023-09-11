@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion'
 import Head from 'next/head'
 
-import { Navbar } from '@components'
+import { Navbar, Banner, MediaCarousel } from '@components'
 
-export default function CommonLayout() {
+export default function CommonLayout({ trendingAllMedia, mediaData }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -18,6 +18,26 @@ export default function CommonLayout() {
       </Head>
       <>
         <Navbar />
+
+        <div className='relative pl-4 pb-24 lg:space-y-24'>
+          <Banner
+            trendingAllMedia={trendingAllMedia}
+          />
+
+          <section className='md:space-y-16'>
+            {
+              mediaData && mediaData.length
+                ? mediaData.map(section => (
+                  <MediaCarousel
+                    key={section.title}
+                    title={section.title}
+                    media={section.media}
+                  />
+                ))
+                : null
+            }
+          </section>
+        </div>
       </>
     </motion.div>
   )
