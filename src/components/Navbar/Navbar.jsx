@@ -6,13 +6,13 @@ import Image from 'next/image'
 
 import { Search, AccountMenu } from './'
 import { GlobalContext } from '@context'
-import Link from 'next/link'
 
 export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [showSearchBar, setShowSearchBar] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [showAccountMenu, setShowAccountMenu] = useState(false)
   const { setPageLoader, setLoggedInAccount } = useContext(GlobalContext)
 
@@ -25,6 +25,15 @@ export default function Navbar() {
   ]
 
   const getAvatar = () => JSON.parse(sessionStorage.getItem('loggedInAccount')).avatar
+
+  const handleRouted = (href) => {
+    if (pathname === href) return
+
+    setPageLoader(true)
+    router.push(href)
+    setSearchQuery('')
+    setShowSearchBar(false)
+  }
 
   // Actualizar el estado de isScrolled cuando el usuario haga scroll
   useEffect(() => {
@@ -42,7 +51,7 @@ export default function Navbar() {
     <nav className='relative'>
       <header className={`header ${isScrolled && 'bg-[#141414]'} hover:bg-[#141414]`}>
         <div className='flex items-center space-x-2 md:space-x-10'>
-          <Image className='cursor-pointer'
+          <Image className='cursor-pointer no-drag svg-shadow'
             src='/icons/netflix-logo.svg'
             alt='Netflix Logo'
             priority
@@ -54,13 +63,11 @@ export default function Navbar() {
 
           <ul className='hidden md:flex md:space-x-4 '>
             {menuItems.map((item) => (
-              <li
+              <li className={`cursor-pointer text-[16px] text-shadow font-medium transition duration-[.4s] hover:text-[#e5b209c0] ${pathname === item.href ? 'text-red-600' : 'text-[#E5E5E5]'}`}
                 key={item.id}
-                className={`cursor-pointer text-[16px] text-shadow font-medium transition duration-[.4s] hover:text-[#e5b209c0] ${pathname === item.href ? 'text-red-600' : 'text-[#E5E5E5]'}`}
+                onClick={() => handleRouted(item.href)}
               >
-                <Link href={item.href}>
                   {item.label}
-                </Link>
               </li>
             ))}
           </ul>
@@ -82,7 +89,8 @@ export default function Navbar() {
                 </motion.div>
               )
             : (
-              <AiOutlineSearch className='hidden sm:inline sm:h-6 sm:w-6 sm:mr-[9px] cursor-pointer' size={24}
+              <AiOutlineSearch className='hidden sm:inline sm:h-6 sm:w-6 sm:mr-[9px] cursor-pointer svg-shadow'
+                size={24}
                 onClick={() => setShowSearchBar(true)} />
               )
             }
@@ -90,7 +98,7 @@ export default function Navbar() {
             <div className='flex-center gap-2 cursor-pointer'
               onClick={() => setShowAccountMenu(!showAccountMenu)}
             >
-              <Image className='rounded-full object-cover bg-gray-950'
+              <Image className='rounded-full object-cover bg-gray-950 no-drag'
                 src={getAvatar()}
                 alt='Avatar'
                 width={36}
@@ -105,6 +113,8 @@ export default function Navbar() {
           setShowAccountMenu={setShowAccountMenu}
           setLoggedInAccount={setLoggedInAccount}
           setPageLoader={setPageLoader}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
       }
     </nav>

@@ -13,7 +13,7 @@ export default function Banner({ trendingAllMedia }) {
     <section className='flex flex-col space-y-2 py-16 md:space-y-4 lg:h-[65hv] lg:justify-end lg:pb-12 lg:pl-24'>
       <div className='absolute top-0 left-0 h-[95vh] w-[99.5vw] -z-10'>
         <Image className='object-cover'
-          src={`${BASE_URL}${createRandomMedia.backdrop_path || createRandomMedia.poster_path}`}
+          src={`${BASE_URL}${createRandomMedia?.backdrop_path || createRandomMedia?.poster_path}`}
           alt='Banner Image'
           fill
           priority

@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 
-export default function Search({ router, setShowSearchBar, setPageLoader }) {
-  const [searchQuery, setSearchQuery] = useState('')
-
+export default function Search({
+  router, setShowSearchBar, setPageLoader, searchQuery, setSearchQuery
+}) {
   const handleSearch = () => {
     if (searchQuery.trim() === '') {
       setShowSearchBar(false)

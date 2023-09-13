@@ -39,7 +39,11 @@ export default function BrowsePage() {
           { title: 'Top Rated TV Shows', media: topRatedTvShows },
         ].map((data) => ({
           ...data,
-          media: data.media.map((mediaItem) => ({ ...mediaItem, type: 'tv' })),
+          media: data.media.map((mediaItem) => ({
+            ...mediaItem,
+            type: 'tv',
+            addedToFavorites: false
+          })),
         })),
         ...[
           { title: 'Trending Movies', media: trendingMovies },
@@ -47,7 +51,11 @@ export default function BrowsePage() {
           { title: 'Top Rated Movies', media: topRatedMovies },
         ].map((data) => ({
           ...data,
-          media: data.media.map((mediaItem) => ({ ...mediaItem, type: 'movie' })),
+          media: data.media.map((mediaItem) => ({
+            ...mediaItem,
+            type: 'movie',
+            addedToFavorites: false
+          })),
         })),
       ])
 
@@ -60,7 +68,7 @@ export default function BrowsePage() {
   if (pageLoader) return <CircleLoader />
 
   return (
-    <main className='flex min-h-screen flex-col'>
+    <main className='flex min-h-screen flex-col no-select'>
       <CommonLayout
         trendingAllMedia={trendingAllMedia}
         mediaData={mediaData}
