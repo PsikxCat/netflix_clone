@@ -57,6 +57,20 @@ export const getMediaVideosById = async (mediaType, id) => {
   }
 }
 
+export const getSearchMedia = async (query) => {
+  try {
+    const response = await fetch(
+      `${TMDB_BASE_URL}/search/multi?query=${query}&api_key=${TMDB_API_KEY}`,
+      { method: 'GET' }
+    )
+    const searchMedia = await response.json()
+
+    return searchMedia
+  } catch (error) {
+    throw new Error('Error fetching media videos' + error)
+  }
+}
+
 // const genresIds = [
 //   { id: 28, name: 'Action' },
 //   { id: 12, name: 'Adventure' },

@@ -13,6 +13,7 @@ export default function GlobalState({ children }) {
   const [pageLoader, setPageLoader] = useState(true)
   const [trendingAllMedia, setTrendingAllMedia] = useState([])
   const [mediaData, setMediaData] = useState([])
+  const [searchResult, setSearchResult] = useState([])
 
   useEffect(() => {
     setLoggedInAccount(sessionStorage.getItem('loggedInAccount'))
@@ -36,6 +37,8 @@ export default function GlobalState({ children }) {
         setTrendingAllMedia,
         mediaData,
         setMediaData,
+        searchResult,
+        setSearchResult
       }}
     >
       {children}

@@ -85,6 +85,8 @@ export default function Navbar() {
                     router={router}
                     setShowSearchBar={setShowSearchBar}
                     setPageLoader={setPageLoader}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
                   />
                 </motion.div>
               )

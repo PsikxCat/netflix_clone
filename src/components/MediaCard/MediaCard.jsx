@@ -14,7 +14,7 @@ export default function MediaCard({ title, mediaItem }) {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay: 0.5, ease: [0, 0.71, 0.2, 1.01] }}
     >
-      <div className='cardWrapper relative h-28 min-w-[180px] cursor-pointer md:h-36 md:min-w-[260px] transform transition duration-500 hover:scale-110 hover:z-[9] rounded-md' >
+      <div className='cardWrapper relative h-28 min-w-[180px] max-w-[440px] cursor-pointer md:h-36 md:min-w-[260px] transform transition duration-500 hover:scale-110 hover:z-[9] rounded-md' >
         <Image className='rounded-md object-cover no-drag'
           src={`${BASE_URL}${mediaItem?.backdrop_path || mediaItem?.poster_path}`}
           alt='media card'
