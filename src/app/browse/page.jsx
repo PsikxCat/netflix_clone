@@ -21,8 +21,13 @@ export default function BrowsePage() {
 
   useEffect(() => {
     (async () => {
-      const trendingAll = await getTrendingMedia('all', 'week')
-      setTrendingAllMedia(trendingAll)
+      const trendingAllShows = await getTrendingMedia('all', 'week')
+      const trendingMedia = trendingAllShows.map((mediaItem) => ({
+        ...mediaItem,
+        type: mediaItem.media_type,
+        addedToFavorites: false
+      }))
+      setTrendingAllMedia(trendingMedia)
 
       const trendingTvShows = await getTrendingMedia('tv', 'week')
       const popularTvShows = await getMediaList('tv', 'popular')

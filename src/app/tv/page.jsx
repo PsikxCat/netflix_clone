@@ -22,7 +22,12 @@ export default function TVPage() {
   useEffect(() => {
     (async () => {
       const trendingTvShows = await getTrendingMedia('tv', 'day')
-      setTrendingAllMedia(trendingTvShows)
+      const trendingMedia = trendingTvShows.map((mediaItem) => ({
+        ...mediaItem,
+        type: mediaItem.media_type,
+        addedToFavorites: false
+      }))
+      setTrendingAllMedia(trendingMedia)
 
       const actionGenre = await getMediaByGenre('tv', 10759)
       const scifiGenre = await getMediaByGenre('tv', 10765)

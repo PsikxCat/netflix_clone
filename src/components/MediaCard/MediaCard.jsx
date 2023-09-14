@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { PlusIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 import Image from 'next/image'
 
 export default function MediaCard({ title, mediaItem }) {
+  const router = useRouter()
   const BASE_URL = 'https://image.tmdb.org/t/p/w500'
 
   return (
@@ -18,6 +20,7 @@ export default function MediaCard({ title, mediaItem }) {
           alt='media card'
           fill
           sizes='(min-width: 640px) 260px, 180px'
+          onClick={() => router.push(`/watch/${mediaItem?.type}/${mediaItem?.id}`)}
         />
 
         <div className='buttonWrapper hidden absolute bottom-0 p-2 space-x-3'>

@@ -1,8 +1,12 @@
+'use client'
+
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { AiFillPlayCircle } from 'react-icons/ai'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
 
 export default function Banner({ trendingAllMedia }) {
+  const router = useRouter()
   const BASE_URL = 'https://image.tmdb.org/t/p/original'
 
   const createRandomMedia = trendingAllMedia && trendingAllMedia.length
@@ -32,12 +36,14 @@ export default function Banner({ trendingAllMedia }) {
       </p>
 
       <div className='flex space-x-3'>
-        <button className='flex items-center space-x-2 px-4 py-2 bg-red-600 text-white text-sm md:text-lg lg:text-xl rounded-md transition hover:opacity-75'>
+        <button className='flex items-center space-x-2 px-4 py-2 bg-red-600 text-white text-sm md:text-lg lg:text-xl rounded-md transition hover:opacity-75 cursor-pointer'
+          onClick={() => router.push(`/watch/${createRandomMedia?.type}/${createRandomMedia?.id}`)}
+        >
           <AiFillPlayCircle className='w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8'/>
           <span>Play</span>
         </button>
 
-        <button className='flex items-center space-x-2 px-4 py-2 bg-[#ffffff] text-black text-sm md:text-lg lg:text-xl rounded-md transition hover:opacity-75'>
+        <button className='flex items-center space-x-2 px-4 py-2 bg-[#ffffff] text-black text-sm md:text-lg lg:text-xl rounded-md transition hover:opacity-75 cursor-pointer'>
           <IoMdInformationCircleOutline className='w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8'/>
           <span>More Info</span>
         </button>

@@ -22,7 +22,12 @@ export default function MoviesPage() {
   useEffect(() => {
     (async () => {
       const trendingMovieShows = await getTrendingMedia('movie', 'day')
-      setTrendingAllMedia(trendingMovieShows)
+      const trendingMedia = trendingMovieShows.map((mediaItem) => ({
+        ...mediaItem,
+        type: mediaItem.media_type,
+        addedToFavorites: false
+      }))
+      setTrendingAllMedia(trendingMedia)
 
       const actionGenre = await getMediaByGenre('movie', 28)
       const horrorGenre = await getMediaByGenre('movie', 27)
