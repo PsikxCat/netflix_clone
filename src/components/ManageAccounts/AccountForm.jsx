@@ -40,6 +40,7 @@ export default function AccountForm({ setShowAccountForm, formData, setFormData,
             <input className='px-5 py-3 rounded-lg bg-[#141414] text-lg text-[#E5B109] outline-none placeholder:text-red-700 focus:outline-none'
               name='name'
               value={formData.name}
+              autoFocus
               placeholder='Enter your name'
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />

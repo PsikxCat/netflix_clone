@@ -4,7 +4,7 @@ import { PlusIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outlin
 
 import Image from 'next/image'
 
-export default function MediaCard({ title, mediaItem }) {
+export default function MediaCard({ mediaItem, searchView = false }) {
   const router = useRouter()
   const BASE_URL = 'https://image.tmdb.org/t/p/w500'
 

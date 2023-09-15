@@ -23,6 +23,7 @@ export default function Search({
       <form className='relative' onSubmit={(e) => handleSubmit(e)}>
         <input className='bg-[#333] text-[#E5E5E5] rounded-md w-[230px] h-[40px] px-4'
           type='text'
+          autoFocus
           placeholder='Search for a title'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}

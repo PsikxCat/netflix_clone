@@ -73,7 +73,8 @@ export default function PinContainer({ showPinContainer, setShowPinContainer }) 
               style={{ display: 'flex', gap: '10px', padding: '20px' }}
               inputStyle={{ borderColor: 'white', borderRadius: '4px', height: '70px', width: '70px', fontSize: '40px', backgroundColor: '#eee', color: 'black', fontWeight: 'bold' }}
               onComplete={(inputPin) => handlePinSubmit(inputPin)}
-              autoSelect={true}
+              autoSelect
+              focus
             />
         </section>
       </motion.div>

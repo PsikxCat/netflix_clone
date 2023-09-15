@@ -17,7 +17,6 @@ export default function MediaCarousel({ title, media }) {
               .map(item => (
                 <MediaCard
                   key={item.id}
-                  title={title}
                   mediaItem={item}
                 />
               ))

@@ -51,7 +51,6 @@ export default function SearchPage({ params }) {
             ? searchResult.map((searchItem) => (
                 <MediaCard
                   key={searchItem.id}
-                  title={searchItem.title || searchItem.name}
                   mediaItem={searchItem}
                   searchView={true}
                 />
