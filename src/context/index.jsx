@@ -8,12 +8,16 @@ import { CircleLoader } from '@components'
 export const GlobalContext = createContext(null)
 
 export default function GlobalState({ children }) {
-  const [loggedInAccount, setLoggedInAccount] = useState(null)
+  const [loggedInAccount, setLoggedInAccount] = useState('')
   const [accounts, setAccounts] = useState([])
   const [pageLoader, setPageLoader] = useState(true)
   const [trendingAllMedia, setTrendingAllMedia] = useState([])
   const [mediaData, setMediaData] = useState([])
   const [searchResult, setSearchResult] = useState([])
+  const [currentMediaCardInfo, setCurrentMediaCardInfo] = useState({ type: '', id: 0 })
+  const [showCardModal, setShowCardModal] = useState(false)
+  const [mediaDetails, setMediaDetails] = useState(null)
+  const [similarMedia, setSimilarMedia] = useState([])
 
   useEffect(() => {
     setLoggedInAccount(sessionStorage.getItem('loggedInAccount'))
@@ -38,7 +42,15 @@ export default function GlobalState({ children }) {
         mediaData,
         setMediaData,
         searchResult,
-        setSearchResult
+        setSearchResult,
+        currentMediaCardInfo,
+        setCurrentMediaCardInfo,
+        showCardModal,
+        setShowCardModal,
+        mediaDetails,
+        setMediaDetails,
+        similarMedia,
+        setSimilarMedia
       }}
     >
       {children}

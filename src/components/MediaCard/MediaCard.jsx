@@ -1,12 +1,20 @@
-import { motion } from 'framer-motion'
+import { useContext } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { PlusIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 
+import { GlobalContext } from '@context'
 import Image from 'next/image'
 
-export default function MediaCard({ mediaItem, searchView = false }) {
-  const router = useRouter()
+export default function MediaCard({ mediaItem, searchView = false, similarMediaView = false }) {
   const BASE_URL = 'https://image.tmdb.org/t/p/w500'
+  const router = useRouter()
+  const { setCurrentMediaCardInfo, setShowCardModal } = useContext(GlobalContext)
+
+  const handleMoreInfoClick = (type, id) => {
+    setCurrentMediaCardInfo({ type, id })
+    setShowCardModal(true)
+  }
 
   return (
     <motion.div
@@ -32,7 +40,9 @@ export default function MediaCard({ mediaItem, searchView = false }) {
             }
           </button>
 
-          <button className='cursor-pointer flex-center border p-2 rounded-full transition border-white   bg-black opacity-60 hover:opacity-80'>
+          <button className='cursor-pointer flex-center border p-2 rounded-full transition border-white   bg-black opacity-60 hover:opacity-80'
+            onClick={() => handleMoreInfoClick(mediaItem?.type, mediaItem?.id)}
+          >
             <ChevronDownIcon className='h-7 w-7' color='#E5E5E5'/>
           </button>
         </div>

@@ -6,6 +6,7 @@ import Image from 'next/image'
 
 import { Search, AccountMenu } from './'
 import { GlobalContext } from '@context'
+import { MoreInfoPopup } from '@components'
 
 export default function Navbar() {
   const router = useRouter()
@@ -14,7 +15,12 @@ export default function Navbar() {
   const [showSearchBar, setShowSearchBar] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showAccountMenu, setShowAccountMenu] = useState(false)
-  const { setPageLoader, setLoggedInAccount } = useContext(GlobalContext)
+  const {
+    setPageLoader,
+    setLoggedInAccount,
+    showCardModal,
+    setShowCardModal
+  } = useContext(GlobalContext)
 
   const menuItems = [
     { id: 'home', label: 'Home', href: '/browse' },
@@ -119,6 +125,8 @@ export default function Navbar() {
           setSearchQuery={setSearchQuery}
         />
       }
+
+      <MoreInfoPopup show={showCardModal} setShow={setShowCardModal} />
     </nav>
   )
 }

@@ -71,6 +71,35 @@ export const getSearchMedia = async (query) => {
   }
 }
 
+export const getMediaDetails = async (mediaType, id) => {
+  try {
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${mediaType}/${id}?append_to_response=videos&api_key=${TMDB_API_KEY}`,
+      { method: 'GET' }
+    )
+
+    const mediaDetails = await response.json()
+
+    return mediaDetails && mediaDetails.videos?.results
+  } catch (error) {
+    throw new Error('Error fetching media videos' + error)
+  }
+}
+
+export const getSimilarMedia = async (mediaType, id) => {
+  try {
+    const response = await fetch(
+      `${TMDB_BASE_URL}/${mediaType}/${id}/similar?api_key=${TMDB_API_KEY}`,
+      { method: 'GET' }
+    )
+
+    const similarMedia = await response.json()
+    return similarMedia && similarMedia.results
+  } catch (error) {
+    throw new Error('Error fetching media videos' + error)
+  }
+}
+
 // const genresIds = [
 //   { id: 28, name: 'Action' },
 //   { id: 12, name: 'Adventure' },
