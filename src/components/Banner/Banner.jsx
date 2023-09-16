@@ -1,13 +1,22 @@
 'use client'
 
-import Image from 'next/image'
+import { useContext } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { AiFillPlayCircle } from 'react-icons/ai'
 import { IoMdInformationCircleOutline } from 'react-icons/io'
 
+import { GlobalContext } from '@context'
+
 export default function Banner({ trendingAllMedia }) {
-  const router = useRouter()
   const BASE_URL = 'https://image.tmdb.org/t/p/original'
+  const router = useRouter()
+  const { setCurrentMediaCardInfo, setShowCardModal } = useContext(GlobalContext)
+
+  const handleMoreInfoClick = (type, id) => {
+    setCurrentMediaCardInfo({ type, id })
+    setShowCardModal(true)
+  }
 
   const createRandomMedia = trendingAllMedia && trendingAllMedia.length
     ? trendingAllMedia[Math.floor(Math.random() * trendingAllMedia.length)]
@@ -43,7 +52,9 @@ export default function Banner({ trendingAllMedia }) {
           <span>Play</span>
         </button>
 
-        <button className='flex items-center space-x-2 px-4 py-2 bg-[#ffffff] text-black text-sm md:text-lg lg:text-xl rounded-md transition hover:opacity-75 cursor-pointer'>
+        <button className='flex items-center space-x-2 px-4 py-2 bg-[#ffffff] text-black text-sm md:text-lg lg:text-xl rounded-md transition hover:opacity-75 cursor-pointer'
+          onClick={() => handleMoreInfoClick(createRandomMedia?.type, createRandomMedia?.id)}
+        >
           <IoMdInformationCircleOutline className='w-4 h-4 md:w-6 md:h-6 lg:w-8 lg:h-8'/>
           <span>More Info</span>
         </button>
