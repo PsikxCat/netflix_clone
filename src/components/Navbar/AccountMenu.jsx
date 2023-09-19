@@ -1,13 +1,17 @@
 'use client'
+import { useRouter } from 'next/navigation'
 
 import { signOut } from 'next-auth/react'
 
 export default function AccountMenu({ setShowAccountMenu, setLoggedInAccount, setPageLoader }) {
+  const router = useRouter()
+
   const handleBackToAccounts = () => {
     setShowAccountMenu(false)
-    setPageLoader(true)
+    setPageLoader(false)
     setLoggedInAccount(null)
     sessionStorage.removeItem('loggedInAccount')
+    router.push('/')
   }
 
   const handleSignOut = async () => {

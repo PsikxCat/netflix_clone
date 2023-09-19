@@ -8,7 +8,7 @@ import { CircleLoader } from '@components'
 export const GlobalContext = createContext(null)
 
 export default function GlobalState({ children }) {
-  const [loggedInAccount, setLoggedInAccount] = useState('')
+  const [loggedInAccount, setLoggedInAccount] = useState(null)
   const [accounts, setAccounts] = useState([])
   const [pageLoader, setPageLoader] = useState(true)
   const [trendingAllMedia, setTrendingAllMedia] = useState([])
@@ -18,11 +18,11 @@ export default function GlobalState({ children }) {
   const [showCardModal, setShowCardModal] = useState(false)
   const [mediaDetails, setMediaDetails] = useState(null)
   const [similarMedia, setSimilarMedia] = useState([])
+  const [favorites, setFavorites] = useState([])
 
   useEffect(() => {
-    setLoggedInAccount(sessionStorage.getItem('loggedInAccount'))
+    setLoggedInAccount(JSON.parse(sessionStorage.getItem('loggedInAccount')))
   }, [])
-
   // Se recupera la data de la sesión...
   const { data: session } = useSession()
   // para evitar que se renderice el componente antes de que se loguee el usuario
@@ -50,7 +50,9 @@ export default function GlobalState({ children }) {
         mediaDetails,
         setMediaDetails,
         similarMedia,
-        setSimilarMedia
+        setSimilarMedia,
+        favorites,
+        setFavorites
       }}
     >
       {children}

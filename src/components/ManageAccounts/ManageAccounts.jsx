@@ -1,6 +1,7 @@
 'use client'
 
 import { useContext, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
@@ -13,6 +14,7 @@ import { getAccounts, deleteAccount } from '@utils/apiUtils'
 export default function ManageAccounts() {
   const { accounts, setAccounts, pageLoader, setPageLoader } = useContext(GlobalContext)
   const { data: session } = useSession()
+  const router = useRouter()
   const [formData, setFormData] = useState({ name: '', pin: '' })
   const [showAccountForm, setShowAccountForm] = useState(false)
   const [showDeleteIcons, setShowDeleteIcons] = useState(false)
@@ -48,6 +50,11 @@ export default function ManageAccounts() {
   const handleOpenAccountForm = () => {
     setShowAccountForm(true)
     setShowDeleteIcons(false)
+  }
+
+  const handleSignOut = () => {
+    signOut()
+    router.push('/')
   }
 
   useEffect(() => {
@@ -109,13 +116,17 @@ export default function ManageAccounts() {
           )}
         </ul>
 
-        <div className='text-center' onClick={() => setShowDeleteIcons(!showDeleteIcons)}>
+        <div className='text-center'
+          onClick={() => setShowDeleteIcons(!showDeleteIcons)}
+        >
             <span className='border border-gray-100 rounded-md cursor-pointer tracking-wide inline-flex text-sm px-[1.5em] py-[0.5em]'>
               Manage Accounts
             </span>
         </div>
 
-        <button className='px-4 py-1 mt-8 bg-red-700 border outline-none rounded-md text-white' onClick={() => signOut()}>
+        <button className='px-4 py-1 mt-8 bg-red-700 border outline-none rounded-md text-white'
+          onClick={handleSignOut}
+        >
           Sign Out
         </button>
 

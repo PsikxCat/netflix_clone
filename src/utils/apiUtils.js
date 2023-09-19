@@ -71,6 +71,48 @@ export async function loginAccount(accountId, pin) {
 
     return await response.json()
   } catch (error) {
-    throw new Error('Error logging in account: ' + error.message)
+    console.error('Error logging in account: ' + error)
+  }
+}
+
+export async function createFavorite(uid, accountID, mediaItem) {
+  const {
+    type,
+    id,
+    backdrop_path,
+    poster_path
+  } = mediaItem
+
+  try {
+    const response = await fetch('api/favorite/create-favorite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid,
+        accountID,
+        mediaID: id,
+        type,
+        backdrop_path,
+        poster_path,
+      })
+    })
+
+    return await response.json()
+  } catch (error) {
+    throw new Error('Error adding favorites: ' + error)
+  }
+}
+
+export async function getFavorites(uid, accountID) {
+  try {
+    const response = await fetch(`/api/favorite/get-favorites?uid=${uid}&accountID=${accountID}`, {
+      method: 'GET',
+    })
+
+    return await response.json()
+  } catch (error) {
+    throw new Error('Error getting favorites: ' + error.message)
   }
 }

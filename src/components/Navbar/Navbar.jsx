@@ -1,4 +1,7 @@
+'use client'
+
 import { usePathname, useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { useContext, useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { motion } from 'framer-motion'
@@ -10,6 +13,7 @@ import { MoreInfoPopup } from '@components'
 
 export default function Navbar() {
   const router = useRouter()
+  const { data: session } = useSession()
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [showSearchBar, setShowSearchBar] = useState(false)
@@ -19,18 +23,20 @@ export default function Navbar() {
     setPageLoader,
     setLoggedInAccount,
     showCardModal,
-    setShowCardModal
+    setShowCardModal,
+    loggedInAccount
   } = useContext(GlobalContext)
 
   const menuItems = [
     { id: 'home', label: 'Home', href: '/browse' },
     { id: 'tv', label: 'TV Shows', href: '/tv' },
     { id: 'movies', label: 'Movies', href: '/movies' },
-    { id: 'my-list', label: 'My List', href: '/my-list' },
-    // # el path de my-list debe cambiar ya que es una pagina dinamica
+    {
+      id: 'my-list',
+      label: 'My List',
+      href: `/my-list/${session?.user?.uid}/${loggedInAccount.id}`
+    },
   ]
-
-  const getAvatar = () => JSON.parse(sessionStorage.getItem('loggedInAccount')).avatar
 
   const handleRouted = (href) => {
     if (pathname === href) return
@@ -107,7 +113,7 @@ export default function Navbar() {
               onClick={() => setShowAccountMenu(!showAccountMenu)}
             >
               <Image className='rounded-full object-cover bg-gray-950 no-drag'
-                src={getAvatar()}
+                src={loggedInAccount?.avatar}
                 alt='Avatar'
                 width={36}
                 height={36}

@@ -1,3 +1,5 @@
+'use client'
+
 import { useContext, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import MuiModal from '@mui/material/Modal'

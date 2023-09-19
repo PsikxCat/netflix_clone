@@ -1,15 +1,33 @@
+'use client'
+
 import { useContext } from 'react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { PlusIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 import { GlobalContext } from '@context'
-import Image from 'next/image'
+import { createFavorite } from '@utils/apiUtils'
 
-export default function MediaCard({ mediaItem, searchView = false, similarMediaView = false }) {
+export default function MediaCard(
+  { mediaItem, searchView = false, similarMediaView = false, listView = false }
+) {
   const BASE_URL = 'https://image.tmdb.org/t/p/w500'
+  const { data: session } = useSession()
   const router = useRouter()
-  const { setCurrentMediaCardInfo, setShowCardModal } = useContext(GlobalContext)
+  const { loggedInAccount, setCurrentMediaCardInfo, setShowCardModal } = useContext(GlobalContext)
+
+  const handleAddClick = async (mediaItem) => {
+    const uid = session?.user?.uid
+    const accountID = loggedInAccount && loggedInAccount.id
+
+    await createFavorite(uid, accountID, mediaItem)
+  }
+
+  const handleRemoveClick = async (mediaItem) => {
+    console.log('remove from favorites') // ! TODO remove from favorites
+  }
 
   const handleMoreInfoClick = (type, id) => {
     setCurrentMediaCardInfo({ type, id })
@@ -32,11 +50,15 @@ export default function MediaCard({ mediaItem, searchView = false, similarMediaV
         />
 
         <div className='buttonWrapper hidden absolute bottom-0 p-2 space-x-3'>
-          <button className='cursor-pointer flex-center border p-2 rounded-full transition border-white   bg-black opacity-60 hover:opacity-80'>
+          <button className='cursor-pointer flex-center border p-2 rounded-full transition border-white   bg-black opacity-60 hover:opacity-80'
+            onClick={ mediaItem?.addedToFavorites
+              ? () => handleRemoveClick(mediaItem) // # cambiar orden
+              : () => handleAddClick(mediaItem) }
+              >
             {
               mediaItem?.addedToFavorites
-                ? <CheckIcon className='h-7 w-7' color='#E5E5E5'/>
-                : <PlusIcon className='h-7 w-7' color='#E5E5E5'/>
+                ? <CheckIcon className='h-7 w-7' color='#E5E5E5' />
+                : <PlusIcon className='h-7 w-7' color='#E5E5E5' />
             }
           </button>
 

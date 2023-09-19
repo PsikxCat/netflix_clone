@@ -24,7 +24,9 @@ module.exports = {
       named: 'never',
       asyncArrow: 'always'
     }],
+    camelcase: 'off',
     'react/prop-types': 'off',
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+
   }
 }

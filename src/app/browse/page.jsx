@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 
 import { GlobalContext } from '@context'
 import { getTrendingMedia, getMediaList } from '@utils/tmdbApiUtils'
+import { getFavorites } from '@utils/apiUtils'
 import { UnauthPage, ManageAccounts, CommonLayout, CircleLoader } from '@components'
 
 export default function BrowsePage() {
@@ -16,7 +17,7 @@ export default function BrowsePage() {
     trendingAllMedia,
     setTrendingAllMedia,
     mediaData,
-    setMediaData
+    setMediaData,
   } = useContext(GlobalContext)
 
   useEffect(() => {
@@ -36,6 +37,13 @@ export default function BrowsePage() {
       const trendingMovies = await getTrendingMedia('movie', 'week')
       const popularMovies = await getMediaList('movie', 'popular')
       const topRatedMovies = await getMediaList('movie', 'top_rated')
+
+      const allFavorites = await getFavorites(
+        session?.user?.uid,
+        loggedInAccount && loggedInAccount.id
+      )
+
+      console.log(allFavorites || 'no hay favoritos')
 
       setMediaData([
         ...[
