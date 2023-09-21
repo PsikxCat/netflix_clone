@@ -18,20 +18,38 @@ export default function MyListPage() {
     setFavorites
   } = useContext(GlobalContext)
 
-  useEffect(() => {
-    (async () => {
-      const uid = session?.user?.uid
-      const accountID = loggedInAccount && loggedInAccount.id
-
+  const fetchAndTransformFavorites = async (uid, accountID) => {
+    try {
       const response = await getFavorites(uid, accountID)
 
-      if (response?.success && response.body.accountFavorites?.length) {
-        const data = response.body.accountFavorites
-          .map((fav) => ({
+      if (response?.success) {
+        const { accountFavorites } = response.body
+
+        if (accountFavorites?.length) {
+          const transformedFavorites = accountFavorites.map((fav) => ({
             ...fav,
             addedToFavorites: true,
           }))
-        setFavorites(data)
+          return transformedFavorites
+        }
+      }
+
+      return []
+    } catch (error) {
+      return { error: 'Error fetching favorites ' + error.message }
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      const uid = session?.user?.uid
+      const accountID = loggedInAccount?.id
+
+      // Obtener y transformar los favoritos
+      const favoritesData = await fetchAndTransformFavorites(uid, accountID)
+
+      if (favoritesData?.length) {
+        setFavorites(favoritesData)
       }
 
       pageLoader && setPageLoader(false)
@@ -54,6 +72,7 @@ export default function MyListPage() {
         <h2 className="cursor-pointer text-sm font-semibold text-[#e5e5e5] transition-colors duration-200 hover:text-white md:text-2xl">
           {loggedInAccount.name}&apos;s favorites
         </h2>
+
         <div className="grid grid-cols-5 justify-start gap-3 scrollbar-hide md:p-2">
           {favorites && favorites.length
             ? favorites.map((favItem) => (
