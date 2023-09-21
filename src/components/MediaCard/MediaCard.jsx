@@ -2,35 +2,91 @@
 
 import { useContext } from 'react'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { PlusIcon, ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline'
 
 import { GlobalContext } from '@context'
-import { createFavorite } from '@utils/apiUtils'
+import { createFavorite, deleteFavorite, getFavorites } from '@utils/apiUtils'
 
 export default function MediaCard(
-  { mediaItem, searchView = false, similarMediaView = false, listView = false }
+  { mediaItem, title, searchView = false, similarMediaView = false, listView = false }
 ) {
   const BASE_URL = 'https://image.tmdb.org/t/p/w500'
   const { data: session } = useSession()
+  const pathname = usePathname()
   const router = useRouter()
-  const { loggedInAccount, setCurrentMediaCardInfo, setShowCardModal } = useContext(GlobalContext)
+  const {
+    loggedInAccount,
+    setCurrentMediaCardInfo,
+    setShowCardModal,
+    setFavorites,
+    setSearchResult,
+    setSimilarMedia,
+    setMediaData
+  } = useContext(GlobalContext)
+
+  const updateFavorites = async () => {
+    const response = await getFavorites(session?.user?.uid, loggedInAccount?.id)
+
+    if (response?.success) {
+      setFavorites(response.body.accountFavorites.map((item) => ({
+        ...item,
+        addedToFavorites: true
+      })))
+    }
+  }
 
   const handleAddClick = async (mediaItem) => {
     const uid = session?.user?.uid
     const accountID = loggedInAccount && loggedInAccount.id
 
-    await createFavorite(uid, accountID, mediaItem)
+    const response = await createFavorite(uid, accountID, mediaItem)
+
+    if (!response?.success) return
+
+    if (pathname.includes('my-list')) updateFavorites()
+    else if (searchView) {
+      setSearchResult((prev) => prev.map((item) =>
+        item.id === mediaItem.id ? { ...item, addedToFavorites: true } : item
+      ))
+    } else if (similarMediaView) {
+      setSimilarMedia((prev) => prev.map((item) =>
+        item.id === mediaItem.id ? { ...item, addedToFavorites: true } : item
+      ))
+    } else {
+      setMediaData(prev => {
+        const updatedMedia = [...prev]
+          .filter(item => item.title === title)[0].media
+          .map((media) => media.id === mediaItem.id
+            ? { ...media, addedToFavorites: true }
+            : media
+          )
+
+        return [...prev].map(item => item.title === title
+          ? { ...item, media: updatedMedia }
+          : item
+        )
+      })
+    }
   }
 
   const handleRemoveClick = async (mediaItem) => {
-    console.log('remove from favorites') // ! TODO remove from favorites
+    console.log(mediaItem)
+    // const response = await deleteFavorite(mediaItem?.mediaID)
+
+    // if (!response?.success) return
   }
 
-  const handleMoreInfoClick = (type, id) => {
-    setCurrentMediaCardInfo({ type, id })
+  const handleMoreInfoClick = (mediaItem) => {
+    const { type, id } = mediaItem
+
+    setCurrentMediaCardInfo({
+      type,
+      id: listView ? mediaItem?.mediaID : id,
+      // esto ya que desde my-list se toman los valores de la DB y no de la API
+    })
     setShowCardModal(true)
   }
 
@@ -52,18 +108,18 @@ export default function MediaCard(
         <div className='buttonWrapper hidden absolute bottom-0 p-2 space-x-3'>
           <button className='cursor-pointer flex-center border p-2 rounded-full transition border-white   bg-black opacity-60 hover:opacity-80'
             onClick={ mediaItem?.addedToFavorites
-              ? () => handleRemoveClick(mediaItem) // # cambiar orden
+              ? () => handleRemoveClick(mediaItem)
               : () => handleAddClick(mediaItem) }
               >
             {
               mediaItem?.addedToFavorites
-                ? <CheckIcon className='h-7 w-7' color='#E5E5E5' />
+                ? <CheckIcon className='h-7 w-7' color='#49C900' />
                 : <PlusIcon className='h-7 w-7' color='#E5E5E5' />
             }
           </button>
 
           <button className='cursor-pointer flex-center border p-2 rounded-full transition border-white   bg-black opacity-60 hover:opacity-80'
-            onClick={() => handleMoreInfoClick(mediaItem?.type, mediaItem?.id)}
+            onClick={() => handleMoreInfoClick(mediaItem)}
           >
             <ChevronDownIcon className='h-7 w-7' color='#E5E5E5'/>
           </button>

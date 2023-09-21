@@ -18,6 +18,7 @@ export default function MediaCarousel({ title, media }) {
                 <MediaCard
                   key={item.id}
                   mediaItem={item}
+                  title={title}
                 />
               ))
           }

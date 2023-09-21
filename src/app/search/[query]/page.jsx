@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 
 import { GlobalContext } from '@context'
 import { getSearchMedia } from '@utils/tmdbApiUtils'
+import { getFavorites } from '@utils/apiUtils'
 import { UnauthPage, ManageAccounts, Navbar, MediaCard } from '@components'
 
 export default function SearchPage({ params }) {
@@ -16,23 +17,30 @@ export default function SearchPage({ params }) {
   if (loggedInAccount === null) return <ManageAccounts />
 
   useEffect(() => {
-    const enhanceMediaResults = (media) => {
-      const filteredAndSortMedia = media?.results.length && media.results
-        .filter((item) => item.poster_path !== null && item.backdrop_path !== null)
-        .sort((a, b) => b.vote_count - a.vote_count)
-        .map((item) => ({
-          ...item,
-          type: item.media_type,
-          addedToFavorites: false
-        }))
-
-      filteredAndSortMedia.length && setSearchResult(filteredAndSortMedia)
-    }
-
     (async () => {
-      enhanceMediaResults(await getSearchMedia(params.query))
+      try {
+        // Se obtiene la respuesta de allFavorites y se extrae el array de favoritos
+        const allFavorites = await getFavorites(session?.user?.uid, loggedInAccount?.id)
+        // Se obtiene la respuesta de searchMedia y se extrae el array de resultados
+        const searchMediaResponse = await getSearchMedia(params.query)
+        const media = searchMediaResponse.results
+        // Se filtran, se ordenan y se agregan el type y addedToFavorites a cada item
+        const filteredAndSortMedia = media
+          .filter((item) => item.poster_path !== null && item.backdrop_path !== null)
+          .sort((a, b) => b.vote_count - a.vote_count)
+          .map((item) => ({
+            ...item,
+            type: item.media_type,
+            addedToFavorites: allFavorites.success && allFavorites.body.accountFavorites.length &&
+              allFavorites.body.accountFavorites.map(fav => fav.mediaID).includes(item.id)
+          }))
+
+        setSearchResult(filteredAndSortMedia)
+      } catch (error) {
+        throw new Error('Error fetching search results' + error.message)
+      }
     })()
-  }, [])
+  }, [params.query, session?.user?.uid, loggedInAccount?.id])
 
   return (
     <motion.div

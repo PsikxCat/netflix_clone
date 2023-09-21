@@ -1,6 +1,7 @@
 'use client'
 
 import { useContext, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import MuiModal from '@mui/material/Modal'
 import { XMarkIcon } from '@heroicons/react/24/outline'
@@ -8,45 +9,48 @@ import ReactPlayer from 'react-player'
 
 import { GlobalContext } from '@context'
 import { getMediaDetails, getSimilarMedia } from '@utils/tmdbApiUtils'
+import { getFavorites } from '@utils/apiUtils'
 import { MediaCard } from '@components'
 
 export default function MoreInfoPopup({ show, setShow }) {
+  const { data: session } = useSession()
   const {
+    loggedInAccount,
     currentMediaCardInfo,
     setCurrentMediaCardInfo,
     mediaDetails,
     setMediaDetails,
     similarMedia,
-    setSimilarMedia
+    setSimilarMedia,
   } = useContext(GlobalContext)
 
   useEffect(() => {
-    const filteredAndSortMedia = (similarMedia) => {
-      if (similarMedia && similarMedia.length) {
-        return similarMedia
-          .filter((item) => item.poster_path !== null && item.backdrop_path !== null)
+    (async () => {
+      try {
+        const allFavorites = await getFavorites(session?.user?.uid, loggedInAccount?.id)
+        const similar = await getSimilarMedia(currentMediaCardInfo.type, currentMediaCardInfo.id)
+        const details = await getMediaDetails(currentMediaCardInfo.type, currentMediaCardInfo.id)
+
+        // Filtrar, ordenar y agregar type y addedToFavorites a cada item
+        const filteredAndSortedMedia = similar
+          ?.filter((item) => item.poster_path !== null && item.backdrop_path !== null)
           .sort((a, b) => b.vote_count - a.vote_count)
           .map((item) => ({
             ...item,
             type: currentMediaCardInfo.type,
-            addedToFavorites: false
+            addedToFavorites: allFavorites.success && allFavorites.body.accountFavorites.length &&
+              allFavorites.body.accountFavorites.map(fav => fav.mediaID).includes(item.id)
           }))
-      } else return []
-    }
 
-    (async () => {
-      const details = await getMediaDetails(currentMediaCardInfo.type, currentMediaCardInfo.id)
-      const similar = await getSimilarMedia(currentMediaCardInfo.type, currentMediaCardInfo.id)
-
-      if (details && details.length) {
         const findClip = details.find((video) => video.type === 'Clip')
         const findTrailer = details.find((video) => video.type === 'Trailer')
-        const findFirstVideo = details[0]
+        const findFirstVideo = findClip || findTrailer || details[0]
 
+        setSimilarMedia(filteredAndSortedMedia || [])
         setMediaDetails(findClip || findTrailer || findFirstVideo)
+      } catch (error) {
+        return { error: 'Error fetching data : ' + error }
       }
-
-      setSimilarMedia(filteredAndSortMedia(similar))
     })()
   }, [currentMediaCardInfo])
 

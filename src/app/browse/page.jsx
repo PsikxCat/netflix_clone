@@ -38,12 +38,7 @@ export default function BrowsePage() {
       const popularMovies = await getMediaList('movie', 'popular')
       const topRatedMovies = await getMediaList('movie', 'top_rated')
 
-      const allFavorites = await getFavorites(
-        session?.user?.uid,
-        loggedInAccount && loggedInAccount.id
-      )
-
-      console.log(allFavorites || 'no hay favoritos')
+      const allFavorites = await getFavorites(session?.user?.uid, loggedInAccount?.id)
 
       setMediaData([
         ...[
@@ -55,7 +50,8 @@ export default function BrowsePage() {
           media: data.media.map((mediaItem) => ({
             ...mediaItem,
             type: 'tv',
-            addedToFavorites: false
+            addedToFavorites: allFavorites.success && allFavorites.body.accountFavorites.length &&
+              allFavorites.body.accountFavorites.map(fav => fav.mediaID).includes(mediaItem.id)
           })),
         })),
         ...[
@@ -67,7 +63,8 @@ export default function BrowsePage() {
           media: data.media.map((mediaItem) => ({
             ...mediaItem,
             type: 'movie',
-            addedToFavorites: false
+            addedToFavorites: allFavorites.success && allFavorites.body.accountFavorites.length &&
+              allFavorites.body.accountFavorites.map(fav => fav.mediaID).includes(mediaItem.id)
           })),
         })),
       ])

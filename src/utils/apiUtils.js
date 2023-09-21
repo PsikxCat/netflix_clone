@@ -61,7 +61,7 @@ export async function deleteAccount(accountId) {
 
 export async function loginAccount(accountId, pin) {
   try {
-    const response = await fetch('api/account/login-account', {
+    const response = await fetch('/api/account/login-account', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +84,7 @@ export async function createFavorite(uid, accountID, mediaItem) {
   } = mediaItem
 
   try {
-    const response = await fetch('api/favorite/create-favorite', {
+    const response = await fetch('/api/favorite/create-favorite', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -99,9 +99,10 @@ export async function createFavorite(uid, accountID, mediaItem) {
       })
     })
 
-    return await response.json()
+    if (response.ok) return await response.json()
+    else return { error: 'Error creating favorite' + response.status }
   } catch (error) {
-    throw new Error('Error adding favorites: ' + error)
+    return { error: 'Error adding favorites: ' + error.message }
   }
 }
 
@@ -113,6 +114,18 @@ export async function getFavorites(uid, accountID) {
 
     return await response.json()
   } catch (error) {
-    throw new Error('Error getting favorites: ' + error.message)
+    return { error: 'Error getting favorites: ' + error.message }
+  }
+}
+
+export async function deleteFavorite(mediaID) {
+  try {
+    const response = await fetch(`/api/favorite/delete-favorite?id=${mediaID}`, {
+      method: 'DELETE',
+    })
+
+    return await response.json()
+  } catch (error) {
+    return { error: 'Error deleting favorite: ' + error.message }
   }
 }

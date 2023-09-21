@@ -27,6 +27,10 @@ export default function MyListPage() {
 
       if (response?.success && response.body.accountFavorites?.length) {
         const data = response.body.accountFavorites
+          .map((fav) => ({
+            ...fav,
+            addedToFavorites: true,
+          }))
         setFavorites(data)
       }
 

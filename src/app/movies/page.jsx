@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 
 import { GlobalContext } from '@context'
 import { getTrendingMedia, getMediaByGenre } from '@utils/tmdbApiUtils'
+import { getFavorites } from '@utils/apiUtils'
 import { UnauthPage, ManageAccounts, CommonLayout, CircleLoader } from '@components'
 
 export default function MoviesPage() {
@@ -39,6 +40,8 @@ export default function MoviesPage() {
       const crimeGenre = await getMediaByGenre('movie', 80)
       const thrillerGenre = await getMediaByGenre('movie', 53)
 
+      const allFavorites = await getFavorites(session?.user?.uid, loggedInAccount?.id)
+
       setMediaData([
         { title: 'Action', media: actionGenre },
         { title: 'Horror', media: horrorGenre },
@@ -54,7 +57,8 @@ export default function MoviesPage() {
         media: data.media.map((mediaItem) => ({
           ...mediaItem,
           type: 'movie',
-          addedToFavorites: false
+          addedToFavorites: allFavorites.success && allFavorites.body.accountFavorites.length &&
+          allFavorites.body.accountFavorites.map(fav => fav.mediaID).includes(mediaItem.id)
         })),
       })))
 
