@@ -46,7 +46,7 @@ export default function MediaCard(
 
     if (!response?.success) return
 
-    if (pathname.includes('my-list')) updateFavorites()
+    if (pathname.includes('my-list') && !similarMediaView) updateFavorites()
     else if (searchView) {
       setSearchResult((prev) => prev.map((item) =>
         item.id === mediaItem.id ? { ...item, addedToFavorites: true } : item
@@ -55,6 +55,7 @@ export default function MediaCard(
       setSimilarMedia((prev) => prev.map((item) =>
         item.id === mediaItem.id ? { ...item, addedToFavorites: true } : item
       ))
+      pathname.includes('my-list') && updateFavorites()
     } else {
       setMediaData(prev => {
         const updatedMedia = [...prev]
@@ -73,10 +74,36 @@ export default function MediaCard(
   }
 
   const handleRemoveClick = async (mediaItem) => {
-    console.log(mediaItem)
-    // const response = await deleteFavorite(mediaItem?.mediaID)
+    const { type, mediaID, id } = mediaItem
+    const response = await deleteFavorite(type, mediaID, id)
+    if (!response?.success) return
 
-    // if (!response?.success) return
+    if (pathname.includes('my-list') && !similarMediaView) updateFavorites()
+    else if (searchView) {
+      setSearchResult((prev) => prev.map((item) =>
+        item.id === mediaItem.id ? { ...item, addedToFavorites: false } : item
+      ))
+    } else if (similarMediaView) {
+      setSimilarMedia((prev) => prev.map((item) =>
+        item.id === mediaItem.id ? { ...item, addedToFavorites: false } : item
+      ))
+      pathname.includes('my-list') && updateFavorites()
+    } else {
+      setMediaData(prev => {
+        console.log([...prev].filter(item => item.title === title))
+        const updatedMedia = [...prev]
+          .filter(item => item.title === title)[0].media
+          .map((media) => media.id === mediaItem.id
+            ? { ...media, addedToFavorites: false }
+            : media
+          )
+
+        return [...prev].map(item => item.title === title
+          ? { ...item, media: updatedMedia }
+          : item
+        )
+      })
+    }
   }
 
   const handleMoreInfoClick = (mediaItem) => {
@@ -87,6 +114,7 @@ export default function MediaCard(
       id: listView ? mediaItem?.mediaID : id,
       // esto ya que desde my-list se toman los valores de la DB y no de la API
     })
+
     setShowCardModal(true)
   }
 

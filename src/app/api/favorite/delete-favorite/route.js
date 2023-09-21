@@ -11,19 +11,22 @@ export async function DELETE(request) {
 
     // Capturar el id del favorito a eliminar desde el query param
     const { searchParams } = new URL(request.url)
-    console.log(searchParams)
+    const type = searchParams.get('type')
     const mediaID = Number(searchParams.get('mediaID'))
-    console.log(mediaID)
+    const id = Number(searchParams.get('id'))
 
-    if (!mediaID) {
+    if (!type && (!mediaID || !id)) {
       return NextResponse.json({
         success: false,
-        message: 'Favotite id not found',
+        message: 'Favorite mediaID not found',
       }, { status: 404 })
     }
 
+    const query = { type }
+    mediaID ? query.mediaID = mediaID : query.mediaID = id
+
     // Eliminar la cuenta
-    const deleteFavorite = await Favorite.findOneAndDelete(mediaID)
+    const deleteFavorite = await Favorite.findOneAndDelete(query)
     console.log(deleteFavorite)
 
     if (deleteFavorite) {

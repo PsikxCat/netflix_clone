@@ -118,11 +118,11 @@ export async function getFavorites(uid, accountID) {
   }
 }
 
-export async function deleteFavorite(mediaID) {
+export async function deleteFavorite(type, mediaID, id) {
   try {
-    const response = await fetch(`/api/favorite/delete-favorite?id=${mediaID}`, {
-      method: 'DELETE',
-    })
+    const response = await fetch(
+      `/api/favorite/delete-favorite?type=${type}&${mediaID ? `mediaID=${mediaID}` : `id=${id}`}`,
+      { method: 'DELETE' })
 
     return await response.json()
   } catch (error) {
