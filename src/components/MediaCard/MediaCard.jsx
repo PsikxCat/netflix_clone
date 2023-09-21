@@ -27,83 +27,62 @@ export default function MediaCard(
     setMediaData
   } = useContext(GlobalContext)
 
-  const updateFavorites = async () => {
-    const response = await getFavorites(session?.user?.uid, loggedInAccount?.id)
+  const handleFavoriteClick = async (mediaItem, isAdding) => {
+    const { type, mediaID, id } = mediaItem
 
-    if (response?.success) {
-      setFavorites(response.body.accountFavorites.map((item) => ({
-        ...item,
-        addedToFavorites: true
-      })))
+    // Lógica para crear o eliminar el favorito
+    const response = isAdding
+      ? await createFavorite(session?.user?.uid, loggedInAccount?.id, mediaItem)
+      : await deleteFavorite(type, mediaID, id)
+
+    if (!response?.success) return
+
+    const updateFavorites = async () => {
+      const response = await getFavorites(session?.user?.uid, loggedInAccount?.id)
+
+      if (response?.success) {
+        setFavorites(response.body.accountFavorites.map((item) => ({
+          ...item,
+          addedToFavorites: true
+        })))
+      }
+    }
+
+    // Actualizar el estado según el caso
+    if (pathname.includes('my-list') && !similarMediaView) updateFavorites()
+    else if (searchView) {
+      const updatedResults = (prev) => prev.map((item) =>
+        item.id === mediaItem.id ? { ...item, addedToFavorites: isAdding } : item
+      )
+      setSearchResult(updatedResults)
+    } else if (similarMediaView) {
+      setSimilarMedia((prev) => prev.map((item) =>
+        item.id === mediaItem.id ? { ...item, addedToFavorites: isAdding } : item
+      ))
+      if (pathname.includes('my-list')) updateFavorites()
+    } else {
+      setMediaData((prev) => {
+        const updatedMedia = [...prev]
+          .filter((item) => item.title === title)[0].media
+          .map((media) => media.id === mediaItem.id
+            ? { ...media, addedToFavorites: isAdding }
+            : media
+          )
+
+        return [...prev].map((item) => item.title === title
+          ? { ...item, media: updatedMedia }
+          : item
+        )
+      })
     }
   }
 
   const handleAddClick = async (mediaItem) => {
-    const uid = session?.user?.uid
-    const accountID = loggedInAccount && loggedInAccount.id
-
-    const response = await createFavorite(uid, accountID, mediaItem)
-
-    if (!response?.success) return
-
-    if (pathname.includes('my-list') && !similarMediaView) updateFavorites()
-    else if (searchView) {
-      setSearchResult((prev) => prev.map((item) =>
-        item.id === mediaItem.id ? { ...item, addedToFavorites: true } : item
-      ))
-    } else if (similarMediaView) {
-      setSimilarMedia((prev) => prev.map((item) =>
-        item.id === mediaItem.id ? { ...item, addedToFavorites: true } : item
-      ))
-      pathname.includes('my-list') && updateFavorites()
-    } else {
-      setMediaData(prev => {
-        const updatedMedia = [...prev]
-          .filter(item => item.title === title)[0].media
-          .map((media) => media.id === mediaItem.id
-            ? { ...media, addedToFavorites: true }
-            : media
-          )
-
-        return [...prev].map(item => item.title === title
-          ? { ...item, media: updatedMedia }
-          : item
-        )
-      })
-    }
+    await handleFavoriteClick(mediaItem, true)
   }
 
   const handleRemoveClick = async (mediaItem) => {
-    const { type, mediaID, id } = mediaItem
-    const response = await deleteFavorite(type, mediaID, id)
-    if (!response?.success) return
-
-    if (pathname.includes('my-list') && !similarMediaView) updateFavorites()
-    else if (searchView) {
-      setSearchResult((prev) => prev.map((item) =>
-        item.id === mediaItem.id ? { ...item, addedToFavorites: false } : item
-      ))
-    } else if (similarMediaView) {
-      setSimilarMedia((prev) => prev.map((item) =>
-        item.id === mediaItem.id ? { ...item, addedToFavorites: false } : item
-      ))
-      pathname.includes('my-list') && updateFavorites()
-    } else {
-      setMediaData(prev => {
-        console.log([...prev].filter(item => item.title === title))
-        const updatedMedia = [...prev]
-          .filter(item => item.title === title)[0].media
-          .map((media) => media.id === mediaItem.id
-            ? { ...media, addedToFavorites: false }
-            : media
-          )
-
-        return [...prev].map(item => item.title === title
-          ? { ...item, media: updatedMedia }
-          : item
-        )
-      })
-    }
+    await handleFavoriteClick(mediaItem, false)
   }
 
   const handleMoreInfoClick = (mediaItem) => {

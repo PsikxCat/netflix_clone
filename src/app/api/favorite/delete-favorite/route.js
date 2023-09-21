@@ -27,7 +27,6 @@ export async function DELETE(request) {
 
     // Eliminar la cuenta
     const deleteFavorite = await Favorite.findOneAndDelete(query)
-    console.log(deleteFavorite)
 
     if (deleteFavorite) {
       return NextResponse.json({
