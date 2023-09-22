@@ -20,7 +20,13 @@ export async function GET(request) {
         success: true,
         body: { accountFavorites: getFavorites },
         message: 'Favorites retrieved successfully',
-      }, { status: 200 })
+      }, {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-cache, no-store',
+          Pragma: 'no-cache',
+        }
+      })
     } else {
       return NextResponse.json({
         success: false,
