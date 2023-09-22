@@ -24,7 +24,7 @@ const authOptions = {
     },
   },
   // La clave secreta global asegura que los tokens de sesión sean seguros y no puedan ser falsificados, incluso si se utilizan varios proveedores de autenticación diferentes.
-  secret: process.env.GLOBAL_SECRET_KEY
+  secret: process.env.NEXTAUTH_SECRET
 }
 
 const handler = NextAuth(authOptions)
