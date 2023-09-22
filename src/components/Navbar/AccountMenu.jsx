@@ -20,7 +20,7 @@ export default function AccountMenu({ setShowAccountMenu, setLoggedInAccount, se
   }
 
   return (
-    <div className="flex items-end flex-col fixed top-[55px] right-[12px] z-50 rounded-md bg-black bg-opacity-90 p-4 space-y-5">
+    <>
       <p className='text-white text-xl font-bold p-1'>
         {JSON.parse(sessionStorage.getItem('loggedInAccount')).name}
       </p>
@@ -36,6 +36,6 @@ export default function AccountMenu({ setShowAccountMenu, setLoggedInAccount, se
           Sign Out of Netflix
         </button>
       </div>
-    </div>
+    </>
   )
 }

@@ -126,18 +126,18 @@ export default function Navbar() {
           {showSearchBar
             ? (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                viewport={{ once: true }}
-                >
-                  <Search
-                    router={router}
-                    setShowSearchBar={setShowSearchBar}
-                    setPageLoader={setPageLoader}
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                  />
-                </motion.div>
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+              >
+                <Search
+                  router={router}
+                  setShowSearchBar={setShowSearchBar}
+                  setPageLoader={setPageLoader}
+                  searchQuery={searchQuery}
+                  setSearchQuery={setSearchQuery}
+                />
+              </motion.div>
               )
             : (
               <AiOutlineSearch className='hidden sm:inline sm:h-6 sm:w-6 sm:mr-[9px] cursor-pointer svg-shadow'
@@ -159,15 +159,23 @@ export default function Navbar() {
         </div>
       </header>
 
-      {showAccountMenu &&
-        <AccountMenu
-          setShowAccountMenu={setShowAccountMenu}
-          setLoggedInAccount={setLoggedInAccount}
-          setPageLoader={setPageLoader}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
-      }
+      <AnimatePresence>
+        {showAccountMenu &&
+          <motion.div className="flex items-end flex-col fixed top-[55px] right-[12px] z-50 rounded-md bg-black bg-opacity-90 p-4 space-y-5"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 50 }}
+          >
+            <AccountMenu
+              setShowAccountMenu={setShowAccountMenu}
+              setLoggedInAccount={setLoggedInAccount}
+              setPageLoader={setPageLoader}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+          </motion.div>
+        }
+      </AnimatePresence>
 
       <MoreInfoPopup show={showCardModal} setShow={setShowCardModal} />
     </nav>
