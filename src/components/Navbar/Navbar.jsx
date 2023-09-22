@@ -3,8 +3,8 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useContext, useEffect, useState } from 'react'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { motion } from 'framer-motion'
+import { AiOutlineMenu, AiOutlineSearch } from 'react-icons/ai'
+import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 
 import { Search, AccountMenu } from './'
@@ -16,6 +16,7 @@ export default function Navbar() {
   const { data: session } = useSession()
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
+  const [showMenu, setShowMenu] = useState(false)
   const [showSearchBar, setShowSearchBar] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showAccountMenu, setShowAccountMenu] = useState(false)
@@ -61,7 +62,7 @@ export default function Navbar() {
 
   return (
     <nav className='relative'>
-      <header className={`header ${isScrolled && 'bg-[#141414]'} hover:bg-[#141414]`}>
+      <header className={`header ${(isScrolled || showMenu) && 'bg-[#141414]'} hover:bg-[#141414]`}>
         <div className='flex items-center space-x-2 md:space-x-10'>
           <Image className='cursor-pointer no-drag svg-shadow'
             src='/icons/netflix-logo.svg'
@@ -72,6 +73,42 @@ export default function Navbar() {
             height={60}
             onClick={() => router.push('/browse')}
           />
+
+          <div className='md:hidden flex items-center space-x-2 px-6'>
+            <button className='text-[#E5E5E5] hover:text-[#e5b209c0] focus:outline-none'
+              onClick={() => setShowMenu(!showMenu)}
+            >
+              <AiOutlineMenu className='sm:h-6 sm:w-6 sm:mr-[9px] cursor-pointer svg-shadow'
+                size={24} />
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showMenu && (
+              <motion.div className='absolute top-16 left-[-10px] w-[50vw] z-10'
+                initial={{ opacity: 0, scale: 0.5, y: -100 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.5, y: -100 }}
+                transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+              >
+                <div className='md:hidden bg-[#141414] rounded-md'>
+                  <ul className='space-y-8 flex-center flex-col p-10'>
+                    {menuItems.map((item) => (
+                      <li
+                        className={`cursor-pointer text-[16px] text-shadow font-medium transition duration-[.4s] hover:text-[#e5b209c0] ${
+                          pathname === item.href ? 'text-red-600' : 'text-[#E5E5E5]'
+                        }`}
+                        key={item.id}
+                        onClick={() => handleRouted(item.href)}
+                      >
+                        {item.label}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <ul className='hidden md:flex md:space-x-4 '>
             {menuItems.map((item) => (
