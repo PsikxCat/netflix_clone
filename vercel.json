@@ -1,0 +1,8 @@
+{
+  "routes": [
+    {
+      "src": "/api/favorite/get-favorites/(.*)",
+      "dest": "/api/favorite/get-favorites/route.js"
+    }
+  ]
+}
