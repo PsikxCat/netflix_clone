@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server'
 import connectToDB from '@database'
 import Favorite from '@models/Favorite'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request) {
   try {
     await connectToDB()
