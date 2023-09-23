@@ -23,8 +23,6 @@ export default function PinContainer({ showPinContainer, setShowPinContainer }) 
 
     if (data && !data.success && data.message === 'Invalid pin') setPinError(true)
     else if (data && data.success) {
-      setPageLoader(true)
-
       setLoggedInAccount(showPinContainer.account)
       sessionStorage.setItem('loggedInAccount', JSON.stringify(showPinContainer.account))
       router.push(pathname)
